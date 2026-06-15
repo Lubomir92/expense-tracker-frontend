@@ -1,56 +1,50 @@
-export default function ExpenseList({
-  expenses,
-  deleteExpense,
-}) {
+import { motion, AnimatePresence } from "framer-motion";
+
+export default function ExpenseList({ expenses, deleteExpense }) {
   if (!expenses?.length) {
     return (
-      <div className="bg-slate-800 rounded-xl p-8 text-center text-gray-400">
-        <h2 className="text-xl mb-2">
-          No expenses yet
-        </h2>
-
-        <p>Add your first expense above.</p>
+      <div className="text-center text-gray-400 mt-10">
+        No expenses yet. Add your first one 🚀
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-800 rounded-xl p-5 shadow-lg border border-slate-700">
-      <h2 className="text-2xl font-bold mb-5">
-        Expenses
-      </h2>
+    <div className="bg-slate-800 p-4 rounded">
+      <h2 className="text-xl mb-4">Expenses</h2>
 
-      <div className="space-y-3">
+      <AnimatePresence>
         {expenses.map((e) => (
-          <div
+          <motion.div
             key={e.id}
-            className="flex justify-between items-center bg-slate-700 rounded-lg p-4 hover:bg-slate-600 transition"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex justify-between items-center border-b border-slate-700 py-2"
           >
             <div>
-              <p className="font-medium">
-                {e.title}
-              </p>
-
-              <p className="text-sm text-gray-400 capitalize">
+              <p>{e.title}</p>
+              <p className="text-sm text-gray-400">
                 {e.category}
               </p>
             </div>
 
-            <div className="flex items-center gap-4">
-              <span className="font-bold text-lg">
+            <div className="flex items-center gap-3">
+              <span className="font-bold">
                 {e.amount} €
               </span>
 
               <button
                 onClick={() => deleteExpense(e.id)}
-                className="text-red-400 hover:text-red-300 transition"
+                className="text-red-400 hover:text-red-600 transition"
               >
                 Delete
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }

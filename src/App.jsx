@@ -3,6 +3,7 @@ import { useAuth } from "./hooks/useAuth";
 import { useExpenses } from "./hooks/useExpenses";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const { token, login, logout, loading } = useAuth();
@@ -18,30 +19,42 @@ export default function App() {
 
   const [ready, setReady] = useState(false);
 
+  // ---------------- INIT ----------------
   useEffect(() => {
     if (!token) return;
+
+    let active = true;
 
     const init = async () => {
       setReady(false);
       await load();
-      setReady(true);
+
+      if (active) setReady(true);
     };
 
     init();
-  }, [token, load]);
+
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   if (!token) return <Login login={login} loading={loading} />;
 
   if (!ready) return <div className="text-white p-10">Loading...</div>;
 
   return (
-    <Dashboard
-      logout={logout}
-      expenses={expenses}
-      total={total}
-      categories={categories}
-      addExpense={addExpense}
-      deleteExpense={deleteExpense}
-    />
+    <>
+      <Toaster position="top-right" />
+
+      <Dashboard
+        logout={logout}
+        expenses={expenses}
+        total={total}
+        categories={categories}
+        addExpense={addExpense}
+        deleteExpense={deleteExpense}
+      />
+    </>
   );
 }

@@ -7,6 +7,7 @@ export const useExpenses = () => {
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState({});
 
+  // ---------------- LOAD ----------------
   const load = useCallback(async () => {
     try {
       const [exp, totalRes, cat] = await Promise.all([
@@ -16,23 +17,34 @@ export const useExpenses = () => {
       ]);
 
       setExpenses(exp ?? []);
-      setTotal(Number(totalRes ?? 0));
+      setTotal(Number(totalRes?.total_spent ?? 0));
       setCategories(cat ?? {});
-
     } catch (e) {
       console.error(e);
       toast.error("Load failed");
     }
   }, []);
 
+  // ---------------- ADD ----------------
   const addExpense = useCallback(async (data) => {
-    await api.createExpense(data);
-    await load(); // OK
+    try {
+      await api.createExpense(data);
+      await load(); // vždy sync z backendu
+    } catch (e) {
+      console.error(e);
+      toast.error("Add failed");
+    }
   }, [load]);
 
+  // ---------------- DELETE ----------------
   const deleteExpense = useCallback(async (id) => {
-    await api.deleteExpense(id);
-    await load();
+    try {
+      await api.deleteExpense(id);
+      await load(); // vždy sync z backendu
+    } catch (e) {
+      console.error(e);
+      toast.error("Delete failed");
+    }
   }, [load]);
 
   return {
