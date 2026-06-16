@@ -9,7 +9,23 @@ export const useExpenses = () => {
 
   // ---------------- LOAD ----------------
   const load = useCallback(async () => {
+    const [exp, totalRes, cat] = await Promise.all([
+      api.getExpenses(),
+      api.getStatsTotal(),
+      api.getStatsCategory(),
+    ]);
+
+    setExpenses(Array.isArray(exp) ? exp : []);
+    setTotal(Number(totalRes?.total_spent ?? 0));
+    setCategories(cat && typeof cat === "object" ? cat : {});
+  }, []);
+
+  // ---------------- ADD ----------------
+  const addExpense = useCallback(async (data) => {
     try {
+      await api.createExpense(data);
+
+      // 🔥 FORCE FULL SYNC (IMPORTANT FIX)
       const [exp, totalRes, cat] = await Promise.all([
         api.getExpenses(),
         api.getStatsTotal(),
@@ -19,44 +35,34 @@ export const useExpenses = () => {
       setExpenses(Array.isArray(exp) ? exp : []);
       setTotal(Number(totalRes?.total_spent ?? 0));
       setCategories(cat && typeof cat === "object" ? cat : {});
-    } catch (e) {
-      console.error(e);
-      toast.error("Load failed");
-      setExpenses([]);
-      setTotal(0);
-      setCategories({});
-    }
-  }, []);
-
-  // ---------------- ADD ----------------
-  const addExpense = useCallback(async (data) => {
-    try {
-      await api.createExpense(data);
-
-      // 🔥 ALWAYS REFRESH FROM BACKEND (fix total bug)
-      await load();
 
       toast.success("Added");
     } catch (e) {
-      console.error(e);
       toast.error("Add failed");
     }
-  }, [load]);
+  }, []);
 
   // ---------------- DELETE ----------------
   const deleteExpense = useCallback(async (id) => {
     try {
       await api.deleteExpense(id);
 
-      // 🔥 ALWAYS REFRESH FROM BACKEND
-      await load();
+      // 🔥 FORCE FULL SYNC
+      const [exp, totalRes, cat] = await Promise.all([
+        api.getExpenses(),
+        api.getStatsTotal(),
+        api.getStatsCategory(),
+      ]);
+
+      setExpenses(Array.isArray(exp) ? exp : []);
+      setTotal(Number(totalRes?.total_spent ?? 0));
+      setCategories(cat && typeof cat === "object" ? cat : {});
 
       toast.success("Deleted");
     } catch (e) {
-      console.error(e);
       toast.error("Delete failed");
     }
-  }, [load]);
+  }, []);
 
   return {
     expenses,
