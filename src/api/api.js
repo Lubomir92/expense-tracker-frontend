@@ -1,6 +1,17 @@
 import { client } from "./client";
 
 export const api = {
+  // ---------------- AUTH ----------------
+  login: async (email, password) => {
+    const res = await client.post("/login", {
+      email,
+      password,
+    });
+
+    return res.data;
+  },
+
+  // ---------------- EXPENSES ----------------
   getExpenses: async () => {
     const res = await client.get("/expenses");
     return res.data ?? [];
@@ -16,6 +27,7 @@ export const api = {
     return res.data;
   },
 
+  // ---------------- STATS ----------------
   getStatsTotal: async () => {
     const res = await client.get("/stats/total");
     return res.data ?? { total_spent: 0 };

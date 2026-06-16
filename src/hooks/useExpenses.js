@@ -16,12 +16,15 @@ export const useExpenses = () => {
         api.getStatsCategory(),
       ]);
 
-      setExpenses(exp ?? []);
+      setExpenses(Array.isArray(exp) ? exp : []);
       setTotal(Number(totalRes?.total_spent ?? 0));
-      setCategories(cat ?? {});
+      setCategories(cat && typeof cat === "object" ? cat : {});
     } catch (e) {
-      console.error(e);
-      toast.error("Load failed");
+      console.error("LOAD ERROR:", e);
+      toast.error("Failed to load expenses");
+      setExpenses([]);
+      setTotal(0);
+      setCategories({});
     }
   }, []);
 
@@ -29,10 +32,11 @@ export const useExpenses = () => {
   const addExpense = useCallback(async (data) => {
     try {
       await api.createExpense(data);
-      await load(); // vždy sync z backendu
+      await load(); // always sync backend
+      toast.success("Expense added");
     } catch (e) {
-      console.error(e);
-      toast.error("Add failed");
+      console.error("ADD ERROR:", e);
+      toast.error("Failed to add expense");
     }
   }, [load]);
 
@@ -40,10 +44,11 @@ export const useExpenses = () => {
   const deleteExpense = useCallback(async (id) => {
     try {
       await api.deleteExpense(id);
-      await load(); // vždy sync z backendu
+      await load(); // always sync backend
+      toast.success("Expense deleted");
     } catch (e) {
-      console.error(e);
-      toast.error("Delete failed");
+      console.error("DELETE ERROR:", e);
+      toast.error("Failed to delete expense");
     }
   }, [load]);
 
