@@ -4,7 +4,7 @@ Full-stack expense tracking application with authentication, analytics, and real
 
 ## 🚀 Live Demo
 - Frontend: https://expense-tracker-frontend-five-xi.vercel.app/
-- Backend: (your Render URL)
+- Backend: https://jwt-auth-api-2-6oo7.onrender.com/
 
 ---
 
