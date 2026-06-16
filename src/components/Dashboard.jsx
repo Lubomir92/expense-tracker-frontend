@@ -1,75 +1,55 @@
-import ExpenseForm from "./ExpenseForm";
-import ExpenseList from "./ExpenseList";
-import CategoryChart from "./CategoryChart";
+import { useState, useCallback } from "react";
+import { api } from "../api/api";
+import toast from "react-hot-toast";
 
-export default function Dashboard({
-  logout,
-  expenses,
-  total,
-  categories,
-  addExpense,
-  deleteExpense,
-}) {
-  const safeCategories =
-    categories && typeof categories === "object" ? categories : {};
+export const useExpenses = () => {
+  const [expenses, setExpenses] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [categories, setCategories] = useState({});
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+  const load = useCallback(async () => {
+    try {
+      const [exp, totalRes, cat] = await Promise.all([
+        api.getExpenses(),
+        api.getStatsTotal(),
+        api.getStatsCategory(),
+      ]);
 
-      {/* HEADER */}
-      <div className="flex justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold">Expense Tracker</h1>
-          <p className="text-gray-400 mt-1">
-            Track and analyze your spending
-          </p>
-        </div>
+      setExpenses(Array.isArray(exp) ? exp : []);
+      setTotal(Number(totalRes?.total_spent ?? 0));
+      setCategories(cat && typeof cat === "object" ? cat : {});
+    } catch (e) {
+      console.error(e);
+      toast.error("Load failed");
+    }
+  }, []);
 
-        <button
-          onClick={logout}
-          className="bg-red-500 hover:bg-red-600 transition px-4 py-2 rounded"
-        >
-          Logout
-        </button>
-      </div>
+  const addExpense = useCallback(async (data) => {
+    try {
+      await api.createExpense(data);
+      await load();
+      toast.success("Added");
+    } catch (e) {
+      toast.error("Add failed");
+    }
+  }, [load]);
 
-      {/* STATS */}
-      <div className="grid md:grid-cols-3 gap-4 mb-8">
+  const deleteExpense = useCallback(async (id) => {
+    try {
+      await api.deleteExpense(id);
+      await load();
+      toast.success("Deleted");
+    } catch (e) {
+      toast.error("Delete failed");
+    }
+  }, [load]);
 
-        <div className="bg-slate-800 p-5 rounded">
-          <p className="text-gray-400 text-sm">Total Spent</p>
-          <p className="text-2xl font-bold">
-            {Number(total) || 0} €
-          </p>
-        </div>
-
-        <div className="bg-slate-800 p-5 rounded">
-          <p className="text-gray-400 text-sm">Expenses</p>
-          <p className="text-2xl font-bold">
-            {expenses?.length || 0}
-          </p>
-        </div>
-
-        <div className="bg-slate-800 p-5 rounded">
-          <p className="text-gray-400 text-sm">Categories</p>
-          <p className="text-2xl font-bold">
-            {Object.keys(safeCategories).length}
-          </p>
-        </div>
-
-      </div>
-
-      {/* FORM + CHART */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-6">
-        <ExpenseForm addExpense={addExpense} />
-        <CategoryChart categories={categories} />
-      </div>
-
-      {/* LIST */}
-      <ExpenseList
-        expenses={expenses}
-        deleteExpense={deleteExpense}
-      />
-    </div>
-  );
-}
+  return {
+    expenses,
+    total,
+    categories,
+    load,
+    addExpense,
+    deleteExpense,
+  };
+};

@@ -22,28 +22,24 @@ export default function App() {
   useEffect(() => {
     if (!token) return;
 
-    let active = true;
-
     const init = async () => {
       setReady(false);
-      try {
-        await load();
-      } catch (e) {
-        console.error(e);
-      }
-      if (active) setReady(true);
+      await load();
+      setReady(true);
     };
 
     init();
-
-    return () => {
-      active = false;
-    };
   }, [token, load]);
 
   if (!token) return <Login login={login} loading={loading} />;
 
-  if (!ready) return <div className="text-white p-10">Loading...</div>;
+  if (!ready) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-slate-950 text-white">
+        <p className="text-xl animate-pulse">Loading dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <>

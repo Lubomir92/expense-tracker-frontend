@@ -7,7 +7,6 @@ export const useExpenses = () => {
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState({});
 
-  // ---------------- LOAD ----------------
   const load = useCallback(async () => {
     try {
       const [exp, totalRes, cat] = await Promise.all([
@@ -21,45 +20,31 @@ export const useExpenses = () => {
       setCategories(cat && typeof cat === "object" ? cat : {});
     } catch (e) {
       console.error("LOAD ERROR:", e);
-      toast.error("Failed to load expenses");
+      toast.error("Load failed");
+
       setExpenses([]);
       setTotal(0);
       setCategories({});
     }
   }, []);
 
-  // ---------------- ADD ----------------
   const addExpense = useCallback(async (data) => {
-  try {
-    await api.createExpense(data);
+    try {
+      await api.createExpense(data);
+      await load(); // always fresh sync
+      toast.success("Added");
+    } catch (e) {
+      toast.error("Add failed");
+    }
+  }, [load]);
 
-    // 🔥 IMPORTANT: force fresh reload
-    const [exp, totalRes, cat] = await Promise.all([
-      api.getExpenses(),
-      api.getStatsTotal(),
-      api.getStatsCategory(),
-    ]);
-
-    setExpenses(Array.isArray(exp) ? exp : []);
-    setTotal(Number(totalRes?.total_spent ?? 0));
-    setCategories(cat && typeof cat === "object" ? cat : {});
-
-    toast.success("Expense added");
-  } catch (e) {
-    console.error("ADD ERROR:", e);
-    toast.error("Failed to add expense");
-  }
-}, []);
-
-  // ---------------- DELETE ----------------
   const deleteExpense = useCallback(async (id) => {
     try {
       await api.deleteExpense(id);
-      await load(); // always sync backend
-      toast.success("Expense deleted");
+      await load(); // always fresh sync
+      toast.success("Deleted");
     } catch (e) {
-      console.error("DELETE ERROR:", e);
-      toast.error("Failed to delete expense");
+      toast.error("Delete failed");
     }
   }, [load]);
 

@@ -71,12 +71,11 @@ export default function ExpenseForm({ addExpense }) {
         </select>
 
         <button
-          type="submit"
-          disabled={loading}
-          className="md:col-span-3 bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          {loading ? "Adding..." : "Add Expense"}
-        </button>
+  disabled={loading}
+  className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50 transition"
+>
+  {loading ? "Adding..." : "Add Expense"}
+</button>
       </form>
     </div>
   );

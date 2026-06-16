@@ -4,12 +4,13 @@ export default function ExpenseList({ expenses = [], deleteExpense }) {
   const safe = Array.isArray(expenses) ? expenses : [];
 
   if (!safe.length) {
-    return (
-      <div className="text-center text-gray-400 mt-10">
-        No expenses yet. Add your first one 🚀
-      </div>
-    );
-  }
+  return (
+    <div className="text-center text-gray-400 mt-10 p-10 border border-slate-700 rounded">
+      <p className="text-lg">No expenses yet</p>
+      <p className="text-sm mt-2">Add your first expense to start tracking 📊</p>
+    </div>
+  );
+}
 
   return (
     <div className="bg-slate-800 p-4 rounded">

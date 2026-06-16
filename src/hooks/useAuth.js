@@ -22,7 +22,8 @@ export const useAuth = () => {
 
       toast.success("Logged in");
     } catch (err) {
-      toast.error("Network error");
+      console.error(err);
+      toast.error("Login error");
     } finally {
       setLoading(false);
     }
