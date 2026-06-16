@@ -1,59 +1,66 @@
-# Expense Tracker
+# 💰 Expense Tracker App
 
-Full-stack expense tracking application built with React and FastAPI.
+Full-stack expense tracking application with authentication, analytics, and real-time updates.
 
-## Features
+## 🚀 Live Demo
+- Frontend: https://expense-tracker-frontend-five-xi.vercel.app/
+- Backend: (your Render URL)
 
-- JWT Authentication
-- Expense Management
-- Category Analytics
-- Interactive Dashboard
-- PostgreSQL Database
-- REST API
-- Responsive UI
-- Cloud Deployment
+---
 
-## Tech Stack
+## ⚙️ Tech Stack
 
-Frontend:
-- React
-- Tailwind CSS
+### Frontend
+- React (Vite)
 - Axios
-- Recharts
+- React Hooks (custom hooks)
+- React Hot Toast
+- Framer Motion
+- TailwindCSS
 
-Backend:
-- FastAPI
-- SQLAlchemy
+### Backend
+- FastAPI / Node (JWT Auth)
 - PostgreSQL
-- JWT
-- Alembic
+- REST API
+- Deployed on Render
 
-## Screenshots
+---
 
-- Dashboard
+## 🔐 Features
 
-![Dashboard](screenshots/dashboard.png)
+- User authentication (JWT login)
+- Create / delete expenses
+- Category tracking
+- Total spending calculation
+- Live dashboard updates
+- Persistent database storage
+- Protected API routes
 
-- Analytics
+---
 
-![Analytics](screenshots/chart.png)
+## 📊 Dashboard
 
-- Expense List
+- Total expenses overview
+- Category breakdown
+- Expense list with delete action
+- Add expense form
+- Real-time sync with backend
 
-![Expenses](screenshots/expenses.png)
+---
 
-- Authentication
+## 🧠 Key Learnings
 
-![Login](screenshots/login.png)
+- JWT authentication flow
+- API integration with Axios
+- State management with React hooks
+- Backend ↔ frontend synchronization
+- Handling async data consistency
+- Deployment (Vercel + Render)
 
-## Live Demo
+---
 
-Frontend:
-...
+## 🛠 Setup
 
-Backend:
-https://jwt-auth-api-2-6oo7.onrender.com
-
-## Installation
-
-...
+```bash
+npm install
+npm run dev
