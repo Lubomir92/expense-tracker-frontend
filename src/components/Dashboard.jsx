@@ -1,3 +1,5 @@
+import ExpenseForm from "./ExpenseForm";
+import ExpenseList from "./ExpenseList";
 export default function Dashboard({
   logout,
   expenses,
@@ -27,6 +29,7 @@ export default function Dashboard({
       </div>
 
       {/* STATS */}
+
       <div className="grid md:grid-cols-3 gap-4 mb-8">
 
         <div className="bg-slate-800 p-5 rounded">
@@ -47,6 +50,15 @@ export default function Dashboard({
         </div>
 
       </div>
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+  <ExpenseForm addExpense={addExpense} />
+  <CategoryChart categories={categories} />
+</div>
+
+<ExpenseList
+  expenses={expenses}
+  deleteExpense={deleteExpense}
+/>
 
       {/* LIST */}
       {expenses?.length > 0 && (
